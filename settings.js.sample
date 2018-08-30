@@ -1,0 +1,2 @@
+export const PARSE_APP_ID = "";
+export const PARSE_JS_KEY = "";
