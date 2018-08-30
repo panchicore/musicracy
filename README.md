@@ -4,6 +4,11 @@ The open source collaborative playlist consisting in a music web player where so
 
 The purpuse is to enjoy listening music with friends without the hassle of asking the host to add music to his/her queue.
  
+## React Native App
+![Playlist](https://dl2.pushbulletusercontent.com/tIdau6MkzBKBOlLwzRg3HPKyLR2gRMOJ/Screenshot_20180830-150933.png | width=400)
+
+## React Web Player
+WIP
 
 # TODO
 

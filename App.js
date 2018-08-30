@@ -1,8 +1,9 @@
+import React, {Component} from 'react';
 import {Provider} from 'react-redux'
 import {PersistGate} from 'redux-persist/integration/react'
 import {AppNavigator} from './navigation'
 import {store, persistor} from './redux/store'
-import {PARSE_APP_ID, PARSE_JS_KEY} from 'settings'
+import {PARSE_APP_ID, PARSE_JS_KEY} from './settings'
 
 import {updateUser} from './redux/actions'
 
@@ -13,7 +14,7 @@ import {AsyncStorage} from 'react-native';
 
 Parse.setAsyncStorage(AsyncStorage);
 
-class App extends React.Component {
+export default class App extends React.Component {
 
     constructor(props) {
         super(props);

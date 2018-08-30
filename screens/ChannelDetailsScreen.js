@@ -36,7 +36,7 @@ class ChannelDetailsScreen extends React.Component {
 
     handleExit = () => {
         this.props.exitChannel(this.props.channels.currentChannel);
-        this.props.navigation.navigate('Initial');
+        this.props.navigation.navigate('Welcome');
     };
 
     render() {

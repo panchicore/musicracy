@@ -63,7 +63,10 @@ const styles = StyleSheet.create({
         fontSize: 20,
         paddingTop: 30,
         paddingBottom: 10,
-        color: '#fff'
+        color: '#fff',
+        textShadowColor: 'rgba(0, 0, 0, 1)',
+         textShadowOffset: {width: 1, height: 1},
+         textShadowRadius: 2
     },
     playlistItemMiddleUsername: {
         color: '#fff',
@@ -144,12 +147,11 @@ class ChannelPlaylistScreen extends React.Component {
 
             <View style={styles.container}>
 
-                <StatusBar translucent={false} barStyle="default" />
-
                 <SearchBar value={this.state.searchBarText} placeholder="Add youtube link" platform="android"
                            onChangeText={this.handleOnTextChangeSearchBar}
                            onBlur={this.handleOnBlurSearchBar}
                            showLoadingIcon={this.state.showSendVideoLoadingIcon}
+                           containerStyle={{borderBottomColor: 'transparent', borderTopColor: 'transparent'}}
                 />
 
                 {this.state.playlist.newItem &&

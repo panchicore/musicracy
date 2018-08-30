@@ -29,6 +29,9 @@ const ChannelTabs = createBottomTabNavigator({
     tabBarOptions: {
         activeTintColor: 'tomato',
         inactiveTintColor: 'gray',
+        style: {
+            backgroundColor: '#000',
+        }
     },
 });
 
