@@ -1,5 +1,5 @@
 import React from 'react'
-import {StyleSheet, View, Text, FlatList, Image, StatusBar} from 'react-native'
+import {StyleSheet, View, Text, FlatList, Image, Clipboard, AppState} from 'react-native'
 import {connect} from "react-redux";
 import {Input, SearchBar} from 'react-native-elements'
 import {Constants} from 'expo'
@@ -77,6 +77,52 @@ const styles = StyleSheet.create({
 
 });
 
+class VoteIcon extends React.Component {
+    state = {
+        voteUpIconName: 'thumbs-o-up',
+        voteUpActiveIconName: 'thumbs-up',
+        voteDownIconName: 'thumbs-o-down',
+        voteDownActiveIconName: 'thumbs-down',
+        currentIcon: 'bicycle'
+    };
+
+    handleVote = () => {
+        if(this.state.currentIcon === 'thumbs-o-up'){
+            this.setState({currentIcon: 'thumbs-up'});
+        }else if(this.state.currentIcon === 'thumbs-up'){
+            this.setState({currentIcon: 'thumbs-o-up'});
+        }else if(this.state.currentIcon === 'thumbs-o-down'){
+            this.setState({currentIcon: 'thumbs-down'});
+        }else if(this.state.currentIcon === 'thumbs-down') {
+            this.setState({currentIcon: 'thumbs-o-down'});
+        }
+    };
+
+    componentDidMount() {
+
+        if(this.props.type === 'up'){
+            if (this.props.item.votersUp.includes(this.props.item.username)) {
+                this.setState({currentIcon: 'thumbs-up'});
+            } else {
+                this.setState({currentIcon: 'thumbs-o-up'});
+            }
+        }else{
+            if (this.props.item.votersDown.includes(this.props.item.username)) {
+                this.setState({currentIcon: 'thumbs-down'});
+            } else {
+                this.setState({currentIcon: 'thumbs-o-down'});
+            }
+        }
+
+
+
+    }
+
+    render(){
+        return <Icon name={this.state.currentIcon} size={30} color="#fff" onPress={this.handleVote} />
+    }
+}
+
 class ChannelPlaylistScreen extends React.Component {
 
     static navigationOptions = ({ navigation }) => ({
@@ -89,15 +135,18 @@ class ChannelPlaylistScreen extends React.Component {
             newItem: undefined,
             newItemError: undefined,
         },
-        searchBarText: undefined,
+        searchBarText: '',
         showSendVideoLoadingIcon: false,
         showPlaylistLoading: true,
+    };
+
+    _handleAppStateChange = (nextAppState) => {
+        console.log("this.state.appState ------->", nextAppState);
     };
 
     componentDidMount() {
         this.props.getPlaylistItems(this.props.channels.currentChannel.id);
         console.log("state ------->", this.state);
-
     }
 
     componentWillReceiveProps(nextProps) {
@@ -107,8 +156,9 @@ class ChannelPlaylistScreen extends React.Component {
 
         if (nextProps.playlist) {
 
+            this.setState({showSendVideoLoadingIcon: false, searchBarText: ''});
+
             if (this.props.playlist.newItem !== nextProps.playlist.newItem) {
-                this.setState({showSendVideoLoadingIcon: false});
                 this.props.getPlaylistItems(this.props.channels.currentChannel.id);
             }
 
@@ -129,7 +179,14 @@ class ChannelPlaylistScreen extends React.Component {
             this.setState({showSendVideoLoadingIcon: true});
             this.props.sendVideoUrl(this.state.searchBarText, this.props.channels.currentChannel.id, this.props.user.username);
         }
+    };
 
+    handleOnFocusSearchBar =  async () => {
+        const clipboardContent = await Clipboard.getString();
+        console.log("clipboardContent--->", clipboardContent);
+          if(clipboardContent.length > 10 && clipboardContent.includes("https://")){
+              this.setState({searchBarText: clipboardContent});
+          }
     };
 
     handleMessageDismiss = () => {
@@ -143,8 +200,6 @@ class ChannelPlaylistScreen extends React.Component {
 
         return (
 
-
-
             <View style={styles.container}>
 
                 <SearchBar value={this.state.searchBarText} placeholder="Add youtube link" platform="android"
@@ -152,6 +207,7 @@ class ChannelPlaylistScreen extends React.Component {
                            onBlur={this.handleOnBlurSearchBar}
                            showLoadingIcon={this.state.showSendVideoLoadingIcon}
                            containerStyle={{borderBottomColor: 'transparent', borderTopColor: 'transparent'}}
+                           onFocus={this.handleOnFocusSearchBar}
                 />
 
                 {this.state.playlist.newItem &&
@@ -176,7 +232,7 @@ class ChannelPlaylistScreen extends React.Component {
                                 </View>
                                 <View style={styles.playlistItemContentWrapper}>
                                     <View opacity={0.3} style={styles.playlistItemLeft}>
-                                        <Icon name="thumbs-o-down" size={30} color="#fff" />
+                                        <VoteIcon type={'down'} item={item} />
                                     </View>
                                     <View style={styles.playlistItemMiddle}>
                                         <Text numberOfLines={3} style={styles.playlistItemMiddleTitle}>
@@ -185,8 +241,7 @@ class ChannelPlaylistScreen extends React.Component {
                                         <Text style={styles.playlistItemMiddleUsername}>{item.username}</Text>
                                     </View>
                                     <View opacity={0.3} style={styles.playlistItemRight}>
-                                        <Icon name="thumbs-o-up" size={30} color="#fff" />
-
+                                        <VoteIcon type={'up'} item={item} />
                                     </View>
                                 </View>
                             </View>

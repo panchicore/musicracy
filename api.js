@@ -62,6 +62,8 @@ export const getPlaylistItemsApi = async (channelId) => {
         title: item.get("title"),
         thumbnailUrl: item.get("thumbnailUrl"),
         sentUrl: item.get("sentUrl"),
+        votersUp: item.get("votersUp") || [],
+        votersDown: item.get("votersDown") || [],
         createdAt: item.createdAt
     }));
 
